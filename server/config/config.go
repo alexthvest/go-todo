@@ -1,13 +1,15 @@
 package config
 
 import (
+	"errors"
 	"github.com/joho/godotenv"
 	"os"
 )
 
 // Config ...
 type Config struct {
-	Port string
+	ConnectionString string
+	Port             string
 }
 
 // NewConfig ...
@@ -17,8 +19,14 @@ func NewConfig(filenames ...string) (config *Config, err error) {
 		return nil, err
 	}
 
+	connectionString := getVarOrDefault("CONNECTION_STRING", "")
+	if connectionString == "" {
+		return nil, errors.New("unable to connect to database: ConnectionString is empty")
+	}
+
 	return &Config{
-		Port: ":" + getVarOrDefault("PORT", "5000"),
+		ConnectionString: connectionString,
+		Port:             ":" + getVarOrDefault("PORT", "5000"),
 	}, nil
 }
 
