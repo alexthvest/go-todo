@@ -1,18 +1,18 @@
 package main
 
 import (
+	"github.com/alexthvest/go-todo/config"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"log"
 )
 
 func main() {
-	err := godotenv.Load()
+	c, err := config.NewConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	router := gin.Default()
 
-	router.Run(":5000")
+	router.Run(c.Port)
 }
