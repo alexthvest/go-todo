@@ -29,12 +29,10 @@ func main() {
 		todos, err := todoRepository.All()
 
 		if err != nil {
-			context.JSON(http.StatusBadRequest, common.ApiError{
+			common.MakeErrorResponse(context, common.ApiError{
 				StatusCode: http.StatusBadRequest,
 				Message:    err.Error(),
 			})
-
-			context.Abort()
 			return
 		}
 
@@ -48,12 +46,10 @@ func main() {
 		err := context.BindJSON(&todo)
 
 		if err != nil {
-			context.JSON(http.StatusBadRequest, common.ApiError{
+			common.MakeErrorResponse(context, common.ApiError{
 				StatusCode: http.StatusBadRequest,
 				Message:    err.Error(),
 			})
-
-			context.Abort()
 			return
 		}
 

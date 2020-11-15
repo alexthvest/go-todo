@@ -17,12 +17,7 @@ func NewTodoRepository(db *database.Database) *TodoRepository {
 // All ...
 func (r *TodoRepository) All() (todos []database.Todo, err error) {
 	err = r.database.Select(&todos, "SELECT * FROM todos;")
-
-	if err != nil {
-		return nil, err
-	}
-
-	return todos, nil
+	return todos, err
 }
 
 // Add ...
