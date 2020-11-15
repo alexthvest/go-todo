@@ -16,12 +16,17 @@ func NewTodoRepository(db *database.Database) *TodoRepository {
 
 // All ...
 func (r *TodoRepository) All() (todos []database.Todo, err error) {
-	var results []database.Todo
-	err = r.database.Select(&results, "SELECT * FROM todos;")
+	err = r.database.Select(&todos, "SELECT * FROM todos;")
 
 	if err != nil {
 		return nil, err
 	}
 
-	return results, nil
+	return todos, nil
+}
+
+// Add ...
+func (r *TodoRepository) Add(todo database.Todo) error {
+	_, err := r.database.NamedExec("INSERT INTO todos (title, completed) VALUES (:title, :completed)", todo)
+	return err
 }

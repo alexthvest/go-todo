@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/alexthvest/go-todo/common"
 	"github.com/alexthvest/go-todo/config"
 	"github.com/alexthvest/go-todo/database"
 	"github.com/alexthvest/go-todo/repository"
@@ -28,14 +29,46 @@ func main() {
 		todos, err := todoRepository.All()
 
 		if err != nil {
-			log.Fatal(err)
+			context.JSON(http.StatusBadRequest, common.ApiError{
+				StatusCode: http.StatusBadRequest,
+				Message:    err.Error(),
+			})
 
-			context.JSON(http.StatusBadRequest, err)
 			context.Abort()
 			return
 		}
 
 		context.JSON(http.StatusOK, todos)
+	})
+
+	router.POST("/todos", func(context *gin.Context) {
+		var todo database.Todo
+
+		todoRepository := repository.NewTodoRepository(db)
+		err := context.BindJSON(&todo)
+
+		if err != nil {
+			context.JSON(http.StatusBadRequest, common.ApiError{
+				StatusCode: http.StatusBadRequest,
+				Message:    err.Error(),
+			})
+
+			context.Abort()
+			return
+		}
+
+		err = todoRepository.Add(todo)
+		if err != nil {
+			context.JSON(http.StatusBadRequest, common.ApiError{
+				StatusCode: http.StatusBadRequest,
+				Message:    err.Error(),
+			})
+
+			context.Abort()
+			return
+		}
+
+		context.JSON(http.StatusOK, todo)
 	})
 
 	router.Run(c.Port)
