@@ -21,7 +21,17 @@ func (r *TodoRepository) All() (todos []Todo, err error) {
 }
 
 // Add ...
-func (r *TodoRepository) Add(todo Todo) error {
-	_, err := r.database.NamedExec("INSERT INTO todos (title, completed) VALUES (:title, :completed)", todo)
-	return err
+func (r *TodoRepository) Add(todo Todo) (*Todo, error) {
+	query := "INSERT INTO todos (title, completed) VALUES (:title, :completed) RETURNING id"
+	rows, err := r.database.NamedQuery(query, todo)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if rows.Next() {
+		rows.Scan(&todo.Id)
+	}
+
+	return &todo, err
 }

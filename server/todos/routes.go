@@ -46,17 +46,15 @@ func addTodo(env *common.Env) gin.HandlerFunc {
 			return
 		}
 
-		err = todoRepository.Add(todo)
+		doc, err := todoRepository.Add(todo)
 		if err != nil {
-			context.JSON(http.StatusBadRequest, common.ApiError{
+			common.MakeErrorResponse(context, common.ApiError{
 				StatusCode: http.StatusBadRequest,
 				Message:    err.Error(),
 			})
-
-			context.Abort()
 			return
 		}
 
-		context.JSON(http.StatusOK, todo)
+		context.JSON(http.StatusOK, doc)
 	}
 }
