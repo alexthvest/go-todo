@@ -1,4 +1,4 @@
-package database
+package todos
 
 // Todo ...
 type Todo struct {
